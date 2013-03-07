@@ -161,7 +161,7 @@ Bool_t InputManager::checkValues()
   }
   
   if (correction==false && specificFileName!=""){
-    nothingWrong=false;
+    //    nothingWrong=false;
     cout<<"Specifying File only valid for correction run mode"<<endl;
   }
    
