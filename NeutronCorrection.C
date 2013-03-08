@@ -173,6 +173,7 @@ int main(int argc, char **argv){
       Event->pushTime(inEvent->times[i]);
     }
     Event->pushShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
+    Event->pushLiqCorrections(4.597,2.989);
     Event->Finalize();
     outT->Fill();
     Event->Clear();
