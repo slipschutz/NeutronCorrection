@@ -79,11 +79,13 @@ int main(int argc, char **argv){
   corMan.loadFile(runNum);
   Double_t SDelta_T1_Cor=corMan.get("sdt1");
   Double_t SDelta_T2_Cor=corMan.get("sdt2");
-  Double_t int_corrections[4];  
-  int_corrections[0]=corMan.get("int0");
-  int_corrections[1]=corMan.get("int1");
-  int_corrections[2]=corMan.get("int2");
-  int_corrections[3]=corMan.get("int3");
+  vector <Double_t> int_corrections;
+  stringstream name;
+  for (int i=0;i<4;i++){
+    name<<"int"<<i;
+    int_corrections.push_back(corMan.get(name.str().c_str()));
+    name.str("");
+  }
   
   int degree=3;
   Double_t GOE_cor1[degree];
@@ -157,7 +159,11 @@ int main(int argc, char **argv){
   if(maxentry == -1)
       maxentry=nentry;
   
-  cout<<SDelta_T1_Cor<< "   "<<SDelta_T2_Cor<<endl;
+  Event->setShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
+
+  Event->setGainCorrections(int_corrections);
+
+
   for (int jentry=0;jentry<maxentry;jentry++){
     //Get Event from tree
     inT->GetEntry(jentry);
@@ -165,15 +171,14 @@ int main(int argc, char **argv){
     for (int i=0;i<inEvent->channels.size();i++){
       //copy over the things that are not geting changed 
       Event->pushTrace(inEvent->traces[i]);
-      Event->Time_Diff = inEvent->Time_Diff;//same for all i
       Event->pushLongGate(inEvent->longGates[i]);
       Event->pushShortGate(inEvent->shortGates[i]);
       Event->pushChannel(inEvent->channels[i]);
       Event->pushEnergy(inEvent->energies[i]);
       Event->pushTime(inEvent->times[i]);
     }
-    Event->pushShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
-    Event->pushLiqCorrections(4.597,2.989);
+
+
     Event->Finalize();
     outT->Fill();
     Event->Clear();
