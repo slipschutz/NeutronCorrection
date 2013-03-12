@@ -63,7 +63,7 @@ int main(int argc, char **argv){
 
   Long64_t maxentry=-1;
 
-  Bool_t makeTraces=theInputManager.makeTraces;
+  
 
   Bool_t extFlag=theInputManager.ext_flag;
   Bool_t ext_sigma_flag=theInputManager.ext_sigma_flag;
@@ -71,9 +71,15 @@ int main(int argc, char **argv){
   //defualt Filter settings see pixie manual
   Double_t FL=theInputManager.FL;
   Double_t FG=theInputManager.FG;
-  int CFD_delay=theInputManager.d; //in clock ticks
-  Double_t CFD_scale_factor =theInputManager.w;
-  Bool_t correctionRun =theInputManager.correction;
+  Double_t d=theInputManager.d; //in clock ticks
+  Double_t w =theInputManager.w;
+
+  
+
+  Int_t long_gate = theInputManager.long_gate;
+  Int_t short_gate = theInputManager.short_gate;
+
+  Bool_t reMakePulseShape=theInputManager.reMakePulseShape;
 
   CorrectionManager corMan;
   corMan.loadFile(runNum);
@@ -163,6 +169,8 @@ int main(int argc, char **argv){
 
   Event->setGainCorrections(int_corrections);
 
+  Filter theFilter;
+  vector <Double_t> thisEventsCFD;
 
   for (int jentry=0;jentry<maxentry;jentry++){
     //Get Event from tree
@@ -171,8 +179,15 @@ int main(int argc, char **argv){
     for (int i=0;i<inEvent->channels.size();i++){
       //copy over the things that are not geting changed 
       Event->pushTrace(inEvent->traces[i]);
-      Event->pushLongGate(inEvent->longGates[i]);
-      Event->pushShortGate(inEvent->shortGates[i]);
+      if (reMakePulseShape){
+	Int_t start=getStart(theFilter,inEvent,FL,FG,d,w,i);
+	Event->pushLongGate(theFilter.getGate(inEvent->traces[i],start,long_gate));
+	Event->pushShortGate(theFilter.getGate(inEvent->traces[i],start,short_gate));
+      }else {
+	Event->pushLongGate(inEvent->longGates[i]);
+	Event->pushShortGate(inEvent->shortGates[i]);
+      }
+      
       Event->pushChannel(inEvent->channels[i]);
       Event->pushEnergy(inEvent->energies[i]);
       Event->pushTime(inEvent->times[i]);

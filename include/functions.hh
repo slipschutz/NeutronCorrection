@@ -74,3 +74,17 @@ void pushRollingWindow(vector <Sl_Event> &previousEvents,Double_t &sizeOfRolling
 
 }
 
+Int_t getStart(Filter &theFilter,LendaEvent *theEvent,Double_t FL,Double_t FG,
+	       Double_t d,Double_t w,int i){
+
+  vector <Double_t> FF;
+  vector <Double_t> CFDFilter;
+  
+  
+  FF=theFilter.FastFilter(theEvent->traces[i],FL,FG);
+
+  CFDFilter= theFilter.CFD(FF,d,w);
+	
+  Double_t softwareCFD = theFilter.GetZeroCrossing(CFDFilter);
+  return TMath::Floor(softwareCFD) -5;
+}

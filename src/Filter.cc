@@ -46,6 +46,34 @@ void Filter::FastFilter(std::vector <UShort_t> &trace,std::vector <Double_t> &th
     }//End for    
 }
 
+std::vector <Double_t> Filter::FastFilter(std::vector <UShort_t> &trace,Double_t FL,Double_t FG){
+  Double_t sumNum1=0;
+  Double_t sumNum2=0;
+  std::vector <Double_t> thisEventsFF;
+
+  for (int i=0;i< (int) trace.size();i++)
+    {
+      for (int j= i-(FL-1) ;j<i;j++)
+        {
+          if (j>=0)
+            sumNum1 = sumNum1+ trace[j];
+        }
+
+      for (int j=i-(2*FL+FG-1);j<i-(FL+FG);j++)
+        {
+          if (j>=0)
+            sumNum2 = sumNum2+ trace[j];
+        }
+      thisEventsFF.push_back(sumNum1-sumNum2);
+      sumNum1=0;
+      sumNum2=0;
+    }//End for
+  return thisEventsFF; 
+}
+
+
+
+
 
 void Filter:: FastFilterFull(std::vector <UShort_t> &trace,
 			     std::vector <Double_t> &thisEventsFF,
@@ -134,7 +162,7 @@ std::vector <Double_t> Filter::CFD(std::vector <Double_t> &thisEventsFF,
 
   std::vector <Double_t> thisEventsCFD;
   thisEventsCFD.resize(thisEventsFF.size(),0);
-  
+     
   for (int j=0;j<(int) thisEventsFF.size() - CFD_delay;j++) {
     thisEventsCFD[j+CFD_delay] = thisEventsFF[j+CFD_delay] - 
       thisEventsFF[j]/ ( TMath::Power(2,CFD_scale_factor+1) );

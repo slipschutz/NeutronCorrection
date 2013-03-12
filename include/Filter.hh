@@ -17,6 +17,8 @@ public:
   
   void FastFilter(std::vector <UShort_t> &trace,
 		  std::vector <Double_t> &thisEventsFF,Double_t FL,Double_t FG);
+
+  std::vector <Double_t> FastFilter(std::vector <UShort_t> &trace,Double_t FL,Double_t FG);
   
   void FastFilterFull(std::vector <UShort_t> &trace,
 		      std::vector <Double_t> &thisEventsFF,

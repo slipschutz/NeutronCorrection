@@ -16,8 +16,6 @@ InputManager::InputManager()
   runNum=-1;
   numFiles=1;//assume 1 file
   timingMode="softwareCFD";
-  makeTraces=false;
-  correction=false;
 
   specificFileName="";
 
@@ -28,6 +26,9 @@ InputManager::InputManager()
   w =0.25;
   ext_flag=false;//defualt to none meta run format
 
+  long_gate =25;
+  short_gate=14;
+  reMakePulseShape=false;
   sigma=1.0;
 
   ext_sigma_flag=false;
@@ -93,25 +94,7 @@ Bool_t InputManager::loadInputs(vector <string> & inputs){
       timingMode=arguments[i];
     else if (flags[i] == "numFiles")
       numFiles =atoi( arguments[i].c_str());
-    else if (flags[i] == "makeTraces"){
-      if (arguments[i] == "true" ){
-	makeTraces=true;
-      } else if (arguments[i] =="false" ){
-	makeTraces =false;
-      }else {
-	cout<<"makeTraces needs to be true or false"<<endl;
-	return false;
-      }
-    } else if (flags[i]=="correction"){
-      if (arguments[i] == "true" ){
-        correction=true;
-      } else if (arguments[i] =="false" ){
-        correction =false;
-      }else {
-        cout<<"correction needs to be true or false"<<endl;
-        return false;
-      }
-    } else if (flags[i] == "inputFile"){
+    else if (flags[i] == "inputFile"){
       specificFileName=arguments[i];
     } else if (flags[i] == "FL"){
       FL=atof(arguments[i].c_str() );ext_flag=true;
@@ -123,7 +106,13 @@ Bool_t InputManager::loadInputs(vector <string> & inputs){
       w=atof(arguments[i].c_str() );ext_flag=true;
     } else if (flags[i] == "sigma"){
       sigma = atof(arguments[i].c_str());ext_sigma_flag=true;
-    } else {
+    } else if (flags[i] == "LG"){
+      long_gate=atof(arguments[i].c_str());
+      reMakePulseShape=true;
+    } else if (flags[i] == "SG"){
+      short_gate=atof(arguments[i].c_str());
+      reMakePulseShape=true;
+    }else {
       cout<<flags[i] <<" :Unkown option"<<endl;
       return false;
     }  
@@ -142,8 +131,6 @@ Bool_t InputManager::checkValues()
   if (numFiles <=0 || runNum <=0 )
     nothingWrong=false;
 
-  if (makeTraces != true && makeTraces != false)
-    nothingWrong =false;
   
   for (int i=0;i<(int)validTimingModes.size();++i){
     if (timingMode == validTimingModes[i])
@@ -155,16 +142,11 @@ Bool_t InputManager::checkValues()
     dumpValidModes();
   }
 
-  if (correction==true && specificFileName==""){
+  if ( specificFileName==""){
     nothingWrong =false;
-    cout<<"You must specify an inputFile when running a corrections run"<<endl;
+    cout<<"You must specify an inputFile. inputFile:Name_of_File "<<endl;
   }
   
-  if (correction==false && specificFileName!=""){
-    //    nothingWrong=false;
-    cout<<"Specifying File only valid for correction run mode"<<endl;
-  }
-   
     
 
   if (timingMode != "fitting" && ext_sigma_flag == true ){

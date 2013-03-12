@@ -20,11 +20,13 @@ public:
 
   Int_t numFiles,runNum;
 
-  Bool_t makeTraces,ext_flag;
-  Bool_t correction;
+  Bool_t ext_flag;
+  Bool_t reMakePulseShape;
   
   string timingMode;
   Double_t FL,FG,d,w;
+
+  Int_t short_gate,long_gate;
 
   string specificFileName;
 
