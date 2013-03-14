@@ -22,7 +22,6 @@ public:
 
   Bool_t ext_flag;
   Bool_t reMakePulseShape;
-  
   string timingMode;
   Double_t FL,FG,d,w;
 

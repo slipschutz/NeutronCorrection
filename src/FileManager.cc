@@ -14,24 +14,38 @@ FileManager::FileManager()
 
   outputFileName.str("Defualt");
   fileName.str("Defualt");
-
   timingMode="softwareCFD";//Default to softwareCFD
 
+  runNum=-1;
+
+}
+void FileManager::setFileWithRun(){
+  
+  if (runNum ==-1){
+    cout<<"***Warning no runNumber set***"<<endl;
+    cout<<"FileManager->runNum=ruNum or load file"<<endl;
+  } else {
+    if (runNum <10){
+      fileName<<"run-000"<< runNum;
+    } else if (runNum < 100){
+      fileName<<"run-00"<< runNum;
+    } else if (runNum <1000) {
+      fileName<<"run-0"<< runNum;
+    } else {
+      cout<<"***Warning Update run number parsing***"<<endl;
+    }
+  }
 }
 
+
 TString FileManager::loadFile(Int_t runNum,Int_t fileNum) {
-  
+
+  //set run num
+  this->runNum=runNum;
+
   fileName.str("");
   outputFileName.str("");
-  if (runNum <10){
-    fileName<<"run-000"<< runNum;
-  } else if (runNum < 100){
-    fileName<<"run-00"<< runNum;
-  } else if (runNum <1000) {
-    fileName<<"run-0"<< runNum;
-  } else {
-    cout<<"Update run number parsing"<<endl; return "Crap";
-  }
+  setFileWithRun();
 
   
   outputFileName << fileName.str()<<"-"<<timingMode;
@@ -125,6 +139,20 @@ TFile *FileManager::getOutputFile(string s){
     } else
     cout << "Opened output file " <<outputFileName.str()<< endl;
 
+  return temp;
+
+}
+
+TFile * FileManager::getOutputFile(Int_t LG,Int_t SG){
+
+ 
+  setFileWithRun();//sets the fileName to run-0num
+
+  outputFileName.str("");
+  outputFileName<<fileName.str()<<"-LG"<<LG<<"-SG"<<SG<<".root";
+  
+  TFile *temp =new TFile(outputFileName.str().c_str(),"recreate");
+  
   return temp;
 
 }

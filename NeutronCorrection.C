@@ -115,16 +115,14 @@ int main(int argc, char **argv){
     temp<<"dt2_"<<i;
     DeltaT_cor1[i-1]=corMan.get(temp.str().c_str());
   }
-
-
-
+  
   //prepare files and output tree
   ////////////////////////////////////////////////////////////////////////////////////
   TFile *outFile=0;
   TTree  *outT;
   FileManager * fileMan = new FileManager();
   fileMan->timingMode = theInputManager.timingMode;
-
+  fileMan->runNum=runNum;
   TTree * inT;
   TFile *inFile;
 
@@ -137,10 +135,13 @@ int main(int argc, char **argv){
   cout <<"The number of entires is : "<< nentry << endl ;
   // Openning output Tree and output file
   
-  stringstream s;
-  s<<"CoR"<<theInputManager.specificFileName;
-  outFile = fileMan->getOutputFile(s.str().c_str());
-
+  if (!reMakePulseShape){
+    stringstream s;
+    s<<"CoR"<<theInputManager.specificFileName;
+    outFile = fileMan->getOutputFile(s.str().c_str());
+  } else{
+    outFile = fileMan->getOutputFile(long_gate,short_gate);
+  }
 
   outT = new TTree("flt","Filtered Data Tree --- Comment Description");
   cout << "Creating filtered Tree"<<endl;

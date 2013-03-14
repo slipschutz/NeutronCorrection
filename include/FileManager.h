@@ -15,15 +15,18 @@ public:
   TFile * getOutputFile();
   TFile * getOutputFile(Double_t FL, Double_t FG, Double_t d, Double_t w);
   TFile * getOutputFile(Double_t sigma);
+  TFile * getOutputFile(string );
+  TFile * getOutputFile(Int_t,Int_t );
 
-  TFile *getOutputFile(string );
 
   //File name streams
   std::stringstream fileName;
   std::stringstream outputFileName;
 
-
+  Int_t runNum;
   string timingMode;
   
+ private:
+  void setFileWithRun();
 
 };
