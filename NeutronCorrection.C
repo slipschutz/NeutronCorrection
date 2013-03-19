@@ -98,6 +98,8 @@ int main(int argc, char **argv){
   Double_t GOE_cor2[degree];
   Double_t DeltaT_cor1[degree];
   Double_t DeltaT_cor2[degree];
+  vector <Double_t> Walk1_cor;
+
   std::stringstream temp;
   for (int i=1;i<=degree;i++){
     temp.str("");
@@ -114,8 +116,12 @@ int main(int argc, char **argv){
     temp.str("");
     temp<<"dt2_"<<i;
     DeltaT_cor1[i-1]=corMan.get(temp.str().c_str());
+
+    temp.str("");
+    temp<<"walk1_"<<i;
+    Walk1_cor.push_back( corMan.get(temp.str().c_str()) );
   }
-  
+
   //prepare files and output tree
   ////////////////////////////////////////////////////////////////////////////////////
   TFile *outFile=0;
@@ -167,14 +173,15 @@ int main(int argc, char **argv){
       maxentry=nentry;
   
   Event->setShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
-
   Event->setGainCorrections(int_corrections);
+  Event->setWalkCorrections(Walk1_cor);
+
 
   Filter theFilter;
   vector <Double_t> thisEventsCFD;
 
-  for (int jentry=0;jentry<maxentry;jentry++){
-    //Get Event from tree
+  for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
+   //Get Event from tree
     inT->GetEntry(jentry);
     
     for (int i=0;i<inEvent->channels.size();i++){
@@ -204,7 +211,7 @@ int main(int argc, char **argv){
     if (jentry % 10000 == 0 )
       cout<<"On event "<<jentry<<endl;
     
-  }
+  }//End Main loop
   
 
 
