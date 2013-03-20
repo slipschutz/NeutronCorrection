@@ -98,8 +98,8 @@ int main(int argc, char **argv){
   Double_t GOE_cor2[degree];
   Double_t DeltaT_cor1[degree];
   Double_t DeltaT_cor2[degree];
-  vector <Double_t> Walk1_cor;
-
+  vector <Double_t> Walk2_cor;
+  vector <Double_t> Walk3_cor;
   std::stringstream temp;
   for (int i=1;i<=degree;i++){
     temp.str("");
@@ -118,8 +118,12 @@ int main(int argc, char **argv){
     DeltaT_cor1[i-1]=corMan.get(temp.str().c_str());
 
     temp.str("");
-    temp<<"walk1_"<<i;
-    Walk1_cor.push_back( corMan.get(temp.str().c_str()) );
+    temp<<"walk2_"<<i;
+    Walk2_cor.push_back( corMan.get(temp.str().c_str()) );
+
+    temp.str("");
+    temp<<"walk3_"<<i;
+    Walk3_cor.push_back( corMan.get(temp.str().c_str()) );
   }
 
   //prepare files and output tree
@@ -174,8 +178,10 @@ int main(int argc, char **argv){
   
   Event->setShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
   Event->setGainCorrections(int_corrections);
-  Event->setWalkCorrections(Walk1_cor);
+  Event->setWalkCorrections(Walk2_cor,2);
+  Event->setWalkCorrections(Walk3_cor,3);
 
+  Event->dumpWalkCorrections();
 
   Filter theFilter;
   vector <Double_t> thisEventsCFD;
