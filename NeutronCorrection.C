@@ -208,9 +208,9 @@ int main(int argc, char **argv){
     }
 
 
-    Event->Finalize();
+    Event->Finalize();//DO important stuff
     outT->Fill();
-    Event->Clear();
+    Event->Clear();//Oh god remember to clear
     
     
     //Periodic printing
