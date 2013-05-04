@@ -24,7 +24,8 @@ public:
   void addEntry(string,double);
   int findEntry(string);
   
-  Double_t get(string);
+  Double_t get(string tag);
+  Double_t get(string tag,bool);
   
   void loadFile(int);
   void dump();

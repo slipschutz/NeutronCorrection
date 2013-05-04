@@ -89,10 +89,22 @@ void CorrectionManager::dump(){
 Double_t CorrectionManager::get(string tag){
 
   int ind = findEntry(tag);
-  if (ind == -1){
+  if (ind == -1 ){
     cout<<"**Warning Correction "<<tag<<" not found"<<endl;
     return 1;
   }else {
     return (Double_t) theCorrections[ind].value;
   }
 }
+Double_t CorrectionManager::get(string tag,bool quiet){
+
+  int ind = findEntry(tag);
+  if (ind == -1 ){
+    if(quiet==false)
+      cout<<"**Warning Correction "<<tag<<" not found"<<endl;
+    return 1;
+  }else {
+    return (Double_t) theCorrections[ind].value;
+  }
+}
+
