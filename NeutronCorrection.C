@@ -24,7 +24,10 @@
 #include "InputManager.hh"
 #include "CorrectionManager.hh"
 
+#include <iomanip>
 
+#include <stdio.h> 
+#include <ctime>
 
 #include "functions.hh"
 #define BAD_NUM -10008
@@ -93,52 +96,17 @@ int main(int argc, char **argv){
     name.str("");
   }
   
-  int degree=3;
-  vector <double> GOE_cor1(degree);
-  vector <double> GOE_cor2(degree);
-  vector <double> GOE_cor3(degree);
 
-  Double_t DeltaT_cor1[degree];
-  Double_t DeltaT_cor2[degree];
-  vector <Double_t> Walk2_cor;
-  vector <Double_t> Walk3_cor;
-  vector <Double_t> Walk8_cor;
+  vector <Double_t> GOE_cor1 = corMan.GetVec("goe1");
+  vector <Double_t> GOE_cor2 = corMan.GetVec("goe2");
+  vector <Double_t> GOE_cor3 = corMan.GetVec("goe3");
 
-  std::stringstream temp;
-  for (int i=1;i<=degree;i++){
-    temp.str("");
-    temp<<"goe1_"<<i;
-    GOE_cor1[i-1]=corMan.get(temp.str().c_str());
+  vector <Double_t> Walk_cor0 = corMan.GetVec("walk0"); 
+  vector <Double_t> Walk_cor2 = corMan.GetVec("walk2"); 
+  vector <Double_t> Walk_cor3 = corMan.GetVec("walk3");
+  vector <Double_t> Walk_cor1 = corMan.GetVec("walk1");
 
-    temp.str("");
-    temp<<"goe2_"<<i;
-    GOE_cor2[i-1]=corMan.get(temp.str().c_str());
-
-    temp.str("");
-    temp<<"goe3_"<<i;
-    GOE_cor3[i-1]=corMan.get(temp.str().c_str());
-
-    temp.str("");
-    temp<<"dt1_"<<i;
-    DeltaT_cor1[i-1]=corMan.get(temp.str().c_str());
-
-    temp.str("");
-    temp<<"dt2_"<<i;
-    DeltaT_cor1[i-1]=corMan.get(temp.str().c_str());
-
-    temp.str("");
-    temp<<"walk2_"<<i;
-    Walk2_cor.push_back( corMan.get(temp.str().c_str()) );
-
-    temp.str("");
-    temp<<"walk3_"<<i;
-    Walk3_cor.push_back( corMan.get(temp.str().c_str()) );
-
-    temp.str("");
-    temp<<"walk8_"<<i;
-    Walk8_cor.push_back( corMan.get(temp.str().c_str()) );
-  }
-
+  
   //prepare files and output tree
   ////////////////////////////////////////////////////////////////////////////////////
   TFile *outFile=0;
@@ -191,17 +159,38 @@ int main(int argc, char **argv){
   
   Event->setShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
   Event->setGainCorrections(int_corrections);
-  Event->setWalkCorrections(Walk2_cor,2);
-  Event->setWalkCorrections(Walk3_cor,3);
-  Event->setWalkCorrections(Walk8_cor,8);
+  Event->setWalkCorrections(Walk_cor2,2);
+  Event->setWalkCorrections(Walk_cor3,3);
+  Event->setWalkCorrections(Walk_cor0,0);
+
+
+
+
+
+  Event->DefineCorrection("Dt","CorGOE",GOE_cor1,1);
+  Event->DefineCorrection("Dt_CorGOEch_1","E0",Walk_cor0,0);
+  Event->DefineCorrection("Dt_CorGOEch_1_E0ch_0","E1",Walk_cor1,1);
+
+
+  
+
+
 
   Event->setPositionCorrections(GOE_cor2,2);
   Event->setPositionCorrections(GOE_cor3,3);
-  
-  Event->dumpAllCorrections();
+  Event->setPositionCorrections(GOE_cor1,0);
+
+
+  Event->DumpIntrospective();
 
   Filter theFilter;
   vector <Double_t> thisEventsCFD;
+
+  clock_t startTime;
+  clock_t otherTime;
+  double timeRate=0;
+  startTime = clock();
+  cout<<"\n\n\n";
 
   for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
    //Get Event from tree
@@ -209,11 +198,11 @@ int main(int argc, char **argv){
     
     for (int i=0;i<inEvent->channels.size();i++){
       //copy over the things that are not geting changed 
-      Event->pushTrace(inEvent->traces[i]);
+      Event->pushTrace(inEvent->Traces[i]);
       if (reMakePulseShape){
 	Int_t start=getStart(theFilter,inEvent,FL,FG,d,w,i);
-	Event->pushLongGate(theFilter.getGate(inEvent->traces[i],start,long_gate));
-	Event->pushShortGate(theFilter.getGate(inEvent->traces[i],start,short_gate));
+	Event->pushLongGate(theFilter.getGate(inEvent->Traces[i],start,long_gate));
+	Event->pushShortGate(theFilter.getGate(inEvent->Traces[i],start,short_gate));
       }else {
 	Event->pushLongGate(inEvent->longGates[i]);
 	Event->pushShortGate(inEvent->shortGates[i]);
@@ -228,26 +217,41 @@ int main(int argc, char **argv){
     Event->Finalize();//DO important stuff
     outT->Fill();
     Event->Clear();//Oh god remember to clear
+
+
     
-    
+    if (jentry % 10000 ==0 && jentry /10000 ==2){
+      otherTime=clock();
+      timeRate = TMath::Abs( (startTime-otherTime)/CLOCKS_PER_SEC);
+      timeRate = timeRate/jentry;
+    }
     //Periodic printing
     if (jentry % 10000 == 0 )
-      cout<<"On event "<<jentry<<endl;
+      cout<<"On event "<<setw(9)<<jentry<<" "<<setprecision(3)<<setw(4)<<((double)jentry)/maxentry*100.0<<"% seconds remaining "<<setprecision(4)<<setw(6)<<timeRate*(maxentry-jentry)<<flush<<"\r";
+
+
     
   }//End Main loop
+  Event->PrintList();  
+  outT->Write();
+  
+  TH1F * h;
+  ///Out put explicit histograms for the corrections stored in CorMap
+  for ( map<string,int>::iterator ii=Event->CorMap.begin();ii != Event->CorMap.end();++ii){
+
+    h = new TH1F(ii->first.c_str(),ii->first.c_str(),1000,-10,10);
+    h->Write();
+    h->SetDirectory(0);
+    delete h;
+
+  }
   
 
-
-
-outT->Write();
-outFile->Close();
-
-
- 
-
-cout<<"\n\n**Finished**\n\n";
-
-return  0;
+  outFile->Close();
+  
+  cout<<"\n\n**Finished**\n\n";
+  
+  return  0;
 
 }
 

@@ -108,3 +108,40 @@ Double_t CorrectionManager::get(string tag,bool quiet){
   }
 }
 
+
+vector <Double_t> CorrectionManager::GetVec(string tag){
+
+  vector <Double_t> result;
+  //look for first one
+  stringstream stream;
+  stream<<tag<<"_1";
+  int ind =findEntry(stream.str());
+  if (ind == -1 ){
+    cout<<"**Warning Correction "<<tag<<" not found"<<endl;
+    result.push_back(0);
+
+  } else { 
+    bool searching = true;
+    int count =0;
+    while (searching){
+      if(theCorrections[ind+count].tag.substr(0,theCorrections[ind+count].tag.find("_"))!= tag)
+	searching=false;
+      else{
+	stream.str("");
+	stream<<tag<<"_"<<count+1;
+	if (stream.str() != theCorrections[ind+count].tag)
+	  cout<<"***Warning unexpected name in corrections file "<<
+	    theCorrections[ind+count].tag<<"***\n";
+	result.push_back(theCorrections[ind+count].value);
+	count++;
+      }
+      
+    }
+    
+  }
+
+ 
+
+  return result;
+}
+

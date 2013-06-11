@@ -27,6 +27,9 @@ public:
   Double_t get(string tag);
   Double_t get(string tag,bool);
   
+  vector <Double_t> GetVec(string tag);
+
+  
   void loadFile(int);
   void dump();
 
