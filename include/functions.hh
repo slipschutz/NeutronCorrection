@@ -88,3 +88,74 @@ Int_t getStart(Filter &theFilter,LendaEvent *theEvent,Double_t FL,Double_t FG,
   Double_t softwareCFD = theFilter.GetZeroCrossing(CFDFilter);
   return TMath::Floor(softwareCFD) -5;
 }
+
+/*
+void packEvent(LendaEvent *Event,vector <Sl_Event> inEvents,
+	       Filter theFilter,Double_t FL, Double_t FG,
+	       int CFD_delay,Double_t CFD_scale_factor){
+  
+  //sort the events by channel
+  
+  vector <Sl_Event*> events2(16,NULL);
+  vector <Sl_Event*> events;
+  for (int i=0;i<inEvents.size();i++){
+    events2[inEvents[i].dchan2.chanid]=&inEvents[i];
+  }
+  for (int i=0;i<events2.size();i++){
+    if (events2[i] !=NULL )
+      events.push_back(events2[i]);
+  }
+
+
+  vector <Double_t> thisEventsFF;
+  vector <Double_t> thisEventsCFD;
+  for (int i=0;i<events.size();++i){
+    Double_t thisEventsIntegral=0; //intialize
+    Double_t longGate=0; //intialize
+    Double_t shortGate=0; //intialize
+    Double_t cubicCFD=0;
+    Double_t softwareCFD=0;
+    Double_t traceDelay=50;
+    Double_t start=0;
+
+    thisEventsFF.clear(); //clear
+    thisEventsCFD.clear();//clear
+    if ((events[i]->dchan2.trace).size()!=0){ //if this event has a trace calculate filters and such
+      theFilter.FastFilter(events[i]->dchan2.trace,thisEventsFF,FL,FG); //run FF algorithim
+      thisEventsCFD = theFilter.CFD(thisEventsFF,CFD_delay,CFD_scale_factor); //run CFD algorithim
+      
+      softwareCFD=theFilter.GetZeroCrossing(thisEventsCFD)-traceDelay; //find zeroCrossig of CFD
+      
+      cubicCFD = theFilter.GetZeroCubic(thisEventsCFD)-traceDelay;
+      
+      start = TMath::Floor(softwareCFD) -5; // the start point in the trace for the gates
+      thisEventsIntegral = theFilter.getEnergy(events[i]->dchan2.trace);
+      // longGate = theFilter.getGate(events[i]->dchan->trace,start,25);
+      // shortGate = theFilter.getGate(events[i]->dchan->trace,start,14);
+            
+    }
+    
+    Event->pushTrace(events[i]->dchan2.trace);//save the trace for later if its there
+    //it is 0 if it isn't
+    Event->pushFilter(thisEventsFF); //save filter if it is there
+    Event->pushCFD(thisEventsCFD); //save CFD if it is there
+
+    //Push other thing into the event
+    Event->pushLongGate(longGate); //longer integration window
+    Event->pushShortGate(shortGate);//shorter integration window
+    Event->pushChannel(events[i]->dchan2.chanid);//the channel for this pulse
+    Event->pushEnergy(thisEventsIntegral);;//push trace energy if there
+    Event->pushInternEnergy(events[i]->dchan2.energy);//push internal energy
+    Event->pushTime(events[i]->dchan2.time);
+    Event->pushSoftTime(events[i]->dchan2.timelow +events[i]->dchan2.timehigh*4294967296.0+softwareCFD);
+    Event->pushSoftwareCFD(softwareCFD);
+    Event->pushCubicTime(events[i]->dchan2.timelow +events[i]->dchan2.timehigh*4294967296.0+cubicCFD);
+    Event->pushInternalCFD((events[i]->dchan2.timecfd)/65536.0);
+    Event->pushEntryNum(events[i]->jentry);
+  }
+  
+  //  Event->Finalize(); //Finalize Calculates various parameters and applies corrections
+ 
+ 
+}
+*/

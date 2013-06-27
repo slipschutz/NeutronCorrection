@@ -98,13 +98,21 @@ int main(int argc, char **argv){
   
 
   vector <Double_t> GOE_cor1 = corMan.GetVec("goe1");
+  vector <Double_t> CGOE_cor1 = corMan.GetVec("cgoe1");
   vector <Double_t> GOE_cor2 = corMan.GetVec("goe2");
   vector <Double_t> GOE_cor3 = corMan.GetVec("goe3");
+
 
   vector <Double_t> Walk_cor0 = corMan.GetVec("walk0"); 
   vector <Double_t> Walk_cor2 = corMan.GetVec("walk2"); 
   vector <Double_t> Walk_cor3 = corMan.GetVec("walk3");
   vector <Double_t> Walk_cor1 = corMan.GetVec("walk1");
+
+
+  vector <Double_t> CWalk_cor0 = corMan.GetVec("cwalk0");
+  vector <Double_t> CWalk_cor1 = corMan.GetVec("cwalk1");
+
+
 
   
   //prepare files and output tree
@@ -150,6 +158,8 @@ int main(int argc, char **argv){
   inT->SetBranchAddress("Event",&inEvent);
   
 
+  Event->DefineMap();
+
   //Specify the output branch
   outT->Branch("Event",&Event);
   //  outT->BranchRef();
@@ -162,26 +172,33 @@ int main(int argc, char **argv){
   Event->setWalkCorrections(Walk_cor2,2);
   Event->setWalkCorrections(Walk_cor3,3);
   Event->setWalkCorrections(Walk_cor0,0);
+ 
+
+
+  //  Event->DefineCorrection("Dt","CorGOE",GOE_cor1,1);
+
+//  Event->DefineCorrection("Dt_CorGOEch_1","E0",Walk_cor0,0);
+ // Event->DefineCorrection("Dt_CorGOEch_1","energies[0]",Walk_cor0,0);
+
+  Event->DefineCorrection("Dt","E0",Walk_cor0,0);
+  Event->DefineCorrection("Dt","energies[0]",Walk_cor0,0);
+  Event->DefineCorrection("Dt","energiesCor[0]",Walk_cor0,0);
 
 
 
+  /*Event->DefineCorrection("Dt_CorGOEch_1_E0ch_0","E1",Walk_cor1,1);
 
-
-  Event->DefineCorrection("Dt","CorGOE",GOE_cor1,1);
-  Event->DefineCorrection("Dt_CorGOEch_1","E0",Walk_cor0,0);
-  Event->DefineCorrection("Dt_CorGOEch_1_E0ch_0","E1",Walk_cor1,1);
-
-
-  
-
-
+  Event->DefineCorrection("CDt","CorGOE",CGOE_cor1,1);
+  Event->DefineCorrection("CDt_CorGOEch_1","E0",CWalk_cor0,0);
+  Event->DefineCorrection("CDt_CorGOEch_1_E0ch_0","E1",CWalk_cor1,1);
+  */
 
   Event->setPositionCorrections(GOE_cor2,2);
   Event->setPositionCorrections(GOE_cor3,3);
   Event->setPositionCorrections(GOE_cor1,0);
 
 
-  Event->DumpIntrospective();
+  Event->DumpCorrectable();
 
   Filter theFilter;
   vector <Double_t> thisEventsCFD;
@@ -191,28 +208,13 @@ int main(int argc, char **argv){
   double timeRate=0;
   startTime = clock();
   cout<<"\n\n\n";
-
+  
   for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
    //Get Event from tree
     inT->GetEntry(jentry);
-    
-    for (int i=0;i<inEvent->channels.size();i++){
-      //copy over the things that are not geting changed 
-      Event->pushTrace(inEvent->Traces[i]);
-      if (reMakePulseShape){
-	Int_t start=getStart(theFilter,inEvent,FL,FG,d,w,i);
-	Event->pushLongGate(theFilter.getGate(inEvent->Traces[i],start,long_gate));
-	Event->pushShortGate(theFilter.getGate(inEvent->Traces[i],start,short_gate));
-      }else {
-	Event->pushLongGate(inEvent->longGates[i]);
-	Event->pushShortGate(inEvent->shortGates[i]);
-      }
-      
-      Event->pushChannel(inEvent->channels[i]);
-      Event->pushEnergy(inEvent->energies[i]);
-      Event->pushTime(inEvent->times[i]);
-    }
 
+
+    *Event= *inEvent;
 
     Event->Finalize();//DO important stuff
     outT->Fill();
@@ -232,7 +234,7 @@ int main(int argc, char **argv){
 
     
   }//End Main loop
-  Event->PrintList();  
+
   outT->Write();
   
   TH1F * h;

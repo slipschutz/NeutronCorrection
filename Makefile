@@ -1,5 +1,5 @@
 CXX=$(shell root-config --cxx)
-CFLAGS=-c -g -Wall $(shell root-config --cflags) -I./src -I./include -O3
+CFLAGS=-c -g -Wall $(shell root-config --cflags) -I./src -I./include 
 LDLIBS=$(shell root-config --glibs)
 LDFLAGS=$(shell root-config --ldflags)
 #SOURCES=./src/SL_Event.cc ./src/FileManager.cc ./src/Filter.cc
@@ -30,7 +30,7 @@ all: $(EXECUTABLE)
 
 $(EXECUTABLE) : $(OBJECTS) $(MAINO) $(HEADERS)
 	@echo "Building target" $@ "..." 
-	$(CXX) $(LDFLAGS) -o $@ $(OBJECTS) $(MAINO) $(LDLIBS) -L$(EVENTLIBPATH) -l$(EVENTLIB) -O3
+	$(CXX) $(LDFLAGS) -o $@ $(OBJECTS) $(MAINO) $(LDLIBS) -L$(EVENTLIBPATH) -l$(EVENTLIB)
 	@echo
 	@echo "Build succeed"
 
@@ -50,12 +50,12 @@ $(MAINO): $(MAIN)
 
 
 test:
-	@echo $(HEADERS)
+	@echo $(MAINO)
 
 clean:
-	-rm ./$(OBJECTS)
-	-rm ./$(EXECUTABLE)
-	-rm ./$(MAINO)
+	-rm -f ./$(OBJECTS)
+	-rm -f ./$(EXECUTABLE)
+	-rm -f ./$(MAINO)
 
 sclean:
 	-rm ./$(TEMP)
