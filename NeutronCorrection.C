@@ -49,7 +49,7 @@ int main(int argc, char **argv){
   }  
   
   InputManager theInputManager;
-  if ( !  theInputManager.loadInputs(inputs) ){
+  if ( !  theInputManager.loadInputs2(inputs) ){
     return 0;
   }
   

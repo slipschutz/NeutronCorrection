@@ -81,7 +81,7 @@ Int_t getStart(Filter &theFilter,LendaEvent *theEvent,Double_t FL,Double_t FG,
   vector <Double_t> CFDFilter;
   
   
-  FF=theFilter.FastFilter(theEvent->Traces[i],FL,FG);
+  theFilter.FastFilter(theEvent->Traces[i],FF,FL,FG);
 
   CFDFilter= theFilter.CFD(FF,d,w);
 	

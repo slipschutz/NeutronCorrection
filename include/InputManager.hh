@@ -1,12 +1,12 @@
 
-
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include "TTree.h"
-
+#include <map>
 using namespace std;
 
 class InputManager {
@@ -17,15 +17,18 @@ public:
   ~InputManager();
   
   Bool_t loadInputs(vector <string> &);
+  Bool_t loadInputs2(vector <string> &);
 
-  Int_t numFiles,runNum;
+
+  Int_t runNum;
+  Double_t numFiles;
 
   Bool_t ext_flag;
   Bool_t reMakePulseShape;
   string timingMode;
   Double_t FL,FG,d,w;
 
-  Int_t short_gate,long_gate;
+  Double_t short_gate,long_gate;
 
   string specificFileName;
 
@@ -38,7 +41,18 @@ private:
 
   Bool_t checkValues();
   
+  string lowerCase(string);
+
+  map < string , Double_t *> ValidNumericalInputs; 
+  map < string , Bool_t * > ValidBoolInputs;
+  map < string , string* > ValidStringInputs;
+  void BuildInputMap();
+
   vector<string> validTimingModes;
   void dumpValidModes();
+
+  void DumpAllOpitions();
+
+  void PrintValues();
 
 };
