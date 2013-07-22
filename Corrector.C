@@ -44,7 +44,7 @@ int main(int argc, char **argv){
     inputs.push_back(string(argv[i]));
   }
   if (inputs.size() == 0 ){ // no argumnets display helpful message
-    cout<<"Usage: ./NeutronBuilder runNumber [options:value]"<<endl;
+    cout<<"Usage: ./Corrector runNumber [options:value]"<<endl;
     return 0;
   }  
   
@@ -56,34 +56,17 @@ int main(int argc, char **argv){
   ////////////////////////////////////////////////////////////////////////////////////
 
 
-
-  //load correcctions and settings
-  
-  Double_t sigma=theInputManager.sigma; // the sigma used in the fitting option
-
   Int_t runNum=theInputManager.runNum;
-  Int_t numFiles=theInputManager.numFiles;
-
   Long64_t maxentry=-1;
-
-  
-
-  Bool_t extFlag=theInputManager.ext_flag;
-  Bool_t ext_sigma_flag=theInputManager.ext_sigma_flag;
-
-  //defualt Filter settings see pixie manual
-  Double_t FL=theInputManager.FL;
-  Double_t FG=theInputManager.FG;
-  Double_t d=theInputManager.d; //in clock ticks
-  Double_t w =theInputManager.w;
-
-  
-
   Int_t long_gate = theInputManager.long_gate;
   Int_t short_gate = theInputManager.short_gate;
 
-  Bool_t reMakePulseShape=theInputManager.reMakePulseShape;
 
+
+
+
+  Bool_t reMakePulseShape=theInputManager.reMakePulseShape;
+  //load correcctions and settings
   CorrectionManager corMan;
   corMan.loadFile(runNum);
   Double_t SDelta_T1_Cor=corMan.get("sdt1");
@@ -111,8 +94,6 @@ int main(int argc, char **argv){
 
   vector <Double_t> CWalk_cor0 = corMan.GetVec("cwalk0");
   vector <Double_t> CWalk_cor1 = corMan.GetVec("cwalk1");
-
-
 
   
   //prepare files and output tree

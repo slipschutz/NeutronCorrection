@@ -8,10 +8,10 @@ HEADERS=$(shell ls ./include/*.h*)
 TEMP=$(shell ls ./src/*.cc~)
 TEMP2=$(shell ls ./include/*.hh~)
 OBJECTS=$(SOURCES:.cc=.o) 
-MAIN=NeutronCorrection.C
-MAINO=./src/NeutronCorrection.o
+MAIN=Corrector.C
+MAINO=./src/$(MAIN:.C=.o)
 
-EXECUTABLE=NeutronCorrection
+EXECUTABLE=$(MAIN:.C=)
 
 INCLUDEPATH=include
 SRCPATH=src
