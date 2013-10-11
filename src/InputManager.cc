@@ -31,6 +31,10 @@ InputManager::InputManager()
   reMakePulseShape=false;
   sigma=1.0;
 
+  traceDelay=50;
+  fast=false;
+  lean=false;
+
   ext_sigma_flag=false;
 
   validTimingModes.push_back("internalCFD");
@@ -82,8 +86,6 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
     cout<<"Must supply a integer runNumber"<<endl;
   else
     runNum = atoi(inputs[0].c_str());
-
-  cout<<"num of inputs is "<<inputs.size()<<endl;
   
   for (int i =1;i<(int) inputs.size();++i){
     
@@ -91,8 +93,13 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
     if (temp.size() != 2 ){//input was not a:v
       cout<<"***Warning input "<<inputs[i]<<" not recognized***"<<endl;
     } else{
-      Flags.push_back(lowerCase(temp[0]));
-      Arguments.push_back(lowerCase(temp[1]));
+      if (lowerCase(temp[0])=="inputfile"){
+	Flags.push_back(lowerCase(temp[0]));
+	Arguments.push_back(temp[1]);
+      }else {
+	Flags.push_back(lowerCase(temp[0]));
+	Arguments.push_back(lowerCase(temp[1]));
+      }
     }
   }
 
@@ -126,7 +133,6 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
     } else if (ValidStringInputs.find(Flags[i]) != ValidStringInputs.end()){
       //a string input
       *(ValidStringInputs[Flags[i]]) = Arguments[i];
-      
     } else {
       cout<<"Unkown option "<<Flags[i]<<endl;
     }
@@ -135,7 +141,7 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
 
   PrintValues();
 
-  return false;
+  return checkValues();
 }
 
 string InputManager::lowerCase(string data){

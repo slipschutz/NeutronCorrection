@@ -23,6 +23,10 @@ public:
   Int_t runNum;
   Double_t numFiles;
 
+  Bool_t fast;
+  Bool_t lean;
+  Double_t traceDelay;
+
   Bool_t ext_flag;
   Bool_t reMakePulseShape;
   string timingMode;

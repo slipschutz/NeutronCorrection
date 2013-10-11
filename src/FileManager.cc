@@ -47,7 +47,7 @@ TString FileManager::loadFile(Int_t runNum,Int_t fileNum) {
   outputFileName.str("");
   setFileWithRun();
 
-  
+
   outputFileName << fileName.str()<<"-"<<timingMode;
 
   if (fileNum < 10){
@@ -149,10 +149,11 @@ TFile * FileManager::getOutputFile(Int_t LG,Int_t SG){
   setFileWithRun();//sets the fileName to run-0num
 
   outputFileName.str("");
+  outputFileName<<"~/analysis/run"<<runNum<<"/";
   outputFileName<<fileName.str()<<"-LG"<<LG<<"-SG"<<SG<<".root";
-  
+
   TFile *temp =new TFile(outputFileName.str().c_str(),"recreate");
-  
+  cout<<"THE OUT PUT FILE IS "<<outputFileName.str()<<endl;
   return temp;
 
 }
