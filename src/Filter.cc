@@ -53,7 +53,7 @@ void Filter::FastFilter(std::vector <UShort_t> &trace,std::vector <Double_t> &th
 
       sumNum1=0;
       sumNum2=0;
-     }//End for    
+    }//End for    
 
 }
 
@@ -62,8 +62,8 @@ void Filter:: FastFilterFull(std::vector <UShort_t> &trace,
 			     std::vector <Double_t> &thisEventsFF,
 			     Double_t FL,Double_t FG,Double_t decayTime)
 {
-
-  /*  Double_t S0, Sg, S1; // Varibale names from Tan paper
+  /*
+  Double_t S0, Sg, S1; // Varibale names from Tan paper
   
   Double_t deltaT = 1; //1 clock tick
 
@@ -117,12 +117,13 @@ void Filter:: FastFilterFull(std::vector <UShort_t> &trace,
     }
     
      
-        A0= S0 / (r1*(1-Power(b1,FL)));
+      A0= S0 / (r1*(1-Power(b1,FL)));
     
     J=(Power(b1,FL)*(1-Power(b1,FG))*S0 )/ (Power(b1,FL)-1) +Sg;
     
     A1=(1/r1)*( (Power(b1,FL+FG)*S0)/(Power(b1,FL)-1) - S1/(Power(b1,FL)-1));
-        
+  
+    
     Double_t a0,ag,a1;
     ag=1;
     a0=TMath::Power(b1,FL)/(TMath::Power(b1,FL)-1);
@@ -133,8 +134,8 @@ void Filter:: FastFilterFull(std::vector <UShort_t> &trace,
       thisEventsFF[i]=ag*Sg+a0*S0+a1*S1;
     }
   }
-  */
 
+*/
 }
 
 
@@ -173,10 +174,10 @@ Double_t Filter::GetZeroCrossing(std::vector <Double_t> & CFD){
 	
       }
   }
-  
+
   if (thisEventsZeroCrossings.size() == 0)
     thisEventsZeroCrossings.push_back(BAD_NUM);
-  
+
   if (thisEventsZeroCrossings.size() != 1 )
     return -1;
 
@@ -239,15 +240,15 @@ Double_t Filter::GetZeroCubic(std::vector <Double_t> & CFD){
   double valUp = getFunc(Coeffs,left);
   double valDown =getFunc(Coeffs,right);
 
-
+  int loopCount=0;
   while (notDone){
-    
+    loopCount++;
     if (TMath::Abs(TMath::Abs(valUp)-TMath::Abs(valDown) ) <0.001)
       notDone = false;
-  
+      
     double mid = (left+right)/2.0;
     double midVal = getFunc(Coeffs,mid);
-
+ 
 
     if (midVal > 0)
       left=mid;
@@ -256,7 +257,14 @@ Double_t Filter::GetZeroCubic(std::vector <Double_t> & CFD){
     
     valUp = getFunc(Coeffs,left);
     valDown =getFunc(Coeffs,right);
+    if (loopCount >30 ){//kill stuck loop
+      notDone=false;
+      left =BAD_NUM;
+    }
+
   }
+
+
 
   return left;
 }

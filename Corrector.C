@@ -70,7 +70,9 @@ int main(int argc, char **argv){
   if ( !  theInputManager.loadInputs2(inputs) ){
     return 0;
   }
-  
+
+  cout<<theInputManager.CheckOption("fl")<<endl;
+  return 0;  
   ////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -108,7 +110,7 @@ int main(int argc, char **argv){
   vector <Double_t> GOE_cor2 = corMan.GetVec("goe2");
   vector <Double_t> GOE_cor3 = corMan.GetVec("goe3");
 
-
+ 
   vector <Double_t> Walk_cor0 = corMan.GetVec("walk0"); 
   vector <Double_t> Walk_cor2 = corMan.GetVec("walk2"); 
   vector <Double_t> Walk_cor3 = corMan.GetVec("walk3");

@@ -1,6 +1,7 @@
 
 
 
+
 #include "InputManager.hh"
 #include <vector>
 #include <string>
@@ -63,8 +64,32 @@ void InputManager::BuildInputMap(){
   ValidStringInputs["inputfile"]=&specificFileName;
   
 
+  for (map<string,Double_t *>::iterator ii = ValidNumericalInputs.begin();
+       ii!=ValidNumericalInputs.end();ii++){
+    ChangedInputsMap[ii->first]=false;
+    
+  }
+  for (map<string,Bool_t *>::iterator ii = ValidBoolInputs.begin();
+       ii!=ValidBoolInputs.end();ii++){
+        ChangedInputsMap[ii->first]=false;
+  }
+  for (map<string,string *>::iterator ii = ValidStringInputs.begin();
+       ii!=ValidStringInputs.end();ii++){
+    ChangedInputsMap[ii->first]=false;    
+  }
 }
 
+
+Bool_t InputManager::CheckOption(string s){
+
+  if ( ChangedInputsMap.count(s) != 0 ){
+
+    return ChangedInputsMap[s];
+  }else {
+    throw "crap";
+  }
+
+}
 
 Bool_t InputManager::loadInputs2(vector <string> & inputs){
 
@@ -116,7 +141,7 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
 
 	*(ValidBoolInputs[Flags[i]])=false;
       } else {
-      // bool argument not found 
+	// bool argument not found 
 	cout<<"***Warning "<<Arguments[i]<<" Is not a valid argument for bool flag: "<<Flags[i]<<endl;
       }
     } else if ( ValidNumericalInputs.find(Flags[i]) != ValidNumericalInputs.end()){
@@ -135,6 +160,10 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
       *(ValidStringInputs[Flags[i]]) = Arguments[i];
     } else {
       cout<<"Unkown option "<<Flags[i]<<endl;
+    }
+    ///mark any known flags as havign bee updated
+    if (ChangedInputsMap.count(Flags[i])!=0){
+      ChangedInputsMap[Flags[i]]=true;
     }
 
   }

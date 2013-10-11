@@ -19,6 +19,7 @@ public:
   Bool_t loadInputs(vector <string> &);
   Bool_t loadInputs2(vector <string> &);
 
+  Bool_t CheckOption(string);
 
   Int_t runNum;
   Double_t numFiles;
@@ -39,6 +40,7 @@ public:
   Double_t sigma;
 
   Bool_t ext_sigma_flag;
+
 private:
   vector <string> split (const string &s, char delim, vector<string> &elems);
   vector <string> split (const string &s, char delim);
@@ -50,6 +52,9 @@ private:
   map < string , Double_t *> ValidNumericalInputs; 
   map < string , Bool_t * > ValidBoolInputs;
   map < string , string* > ValidStringInputs;
+
+  map <string, bool > ChangedInputsMap;
+
   void BuildInputMap();
 
   vector<string> validTimingModes;
