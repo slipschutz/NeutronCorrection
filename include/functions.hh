@@ -44,28 +44,46 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
     Double_t shortGate=0; //intialize
     Double_t cubicCFD=0;
     Double_t softwareCFD=0;
-
     Double_t start=0;
-
     thisEventsFF.clear(); //clear
     thisEventsCFD.clear();//clear
-    if (Event->Traces[i].size()!=0 &&inMan.fast==false){ //if this event has a trace calculate filters and such
-      theFilter.FastFilter(Event->Traces[i],thisEventsFF,FL,FG); //run FF algorithim
-      thisEventsCFD = theFilter.CFD(thisEventsFF,CFD_delay,CFD_scale_factor); //run CFD algorithim
+
+    if (Event->Traces[i].size()!=0){ //if this event has a trace calculate filters and such
       
-      softwareCFD=theFilter.GetZeroCrossing(thisEventsCFD)-traceDelay; //find zeroCrossig of CFD
-      
-      cubicCFD = theFilter.GetZeroCubic(thisEventsCFD)-traceDelay;
-      
-      start = TMath::Floor(softwareCFD)+traceDelay -5; // the start point in the trace for the gates
-      thisEventsIntegral = theFilter.getEnergy(Event->Traces[i]);
-      longGate = theFilter.getGate(Event->Traces[i],start,25);
-      shortGate = theFilter.getGate(Event->Traces[i],start,14);
-            
+      if (inMan.CheckOption("fl")||inMan.CheckOption("fg")||
+	  inMan.CheckOption("w")||inMan.CheckOption("d")){
+
+	theFilter.FastFilter(Event->Traces[i],thisEventsFF,FL,FG); //run FF algorithim
+	thisEventsCFD = theFilter.CFD(thisEventsFF,CFD_delay,CFD_scale_factor); //run CFD algorithim
+	
+	softwareCFD=theFilter.GetZeroCrossing(thisEventsCFD)-traceDelay; //find zeroCrossig of CFD
+	
+	cubicCFD = theFilter.GetZeroCubic(thisEventsCFD)-traceDelay;
+	
+	//Over Write the Event with the new values 	
+	Event->Filters[i]=thisEventsFF;
+	Event->CFDs[i]=thisEventsCFD;
+	
+	Event->softTimes[i]=Event->softTimes[i]-Event->softwareCFDs[i]+softwareCFD;//take out old CFD add in new one
+	Event->cubicTimes[i]=Event->cubicTimes[i]-Event->cubicCFDs[i]+cubicCFD;
+	//above two lines should be before next to
+	Event->softwareCFDs[i]=softwareCFD;
+	Event->cubicCFDs[i]=cubicCFD;
+      } else if ( inMan.CheckOption("sg")||inMan.CheckOption("lg")){
+	start = TMath::Floor(Event->softwareCFDs[i])+traceDelay -4; // the start point in the trace for the gates
+	thisEventsIntegral = theFilter.getEnergy(Event->Traces[i]);
+	longGate = theFilter.getGate(Event->Traces[i],start,inMan.long_gate);
+	shortGate = theFilter.getGate(Event->Traces[i],start,inMan.short_gate);
+	//OverWrite the Event with new values 
+	Event->energies[i]=thisEventsIntegral;
+	Event->shortGates[i]=shortGate;
+	Event->longGates[i]=longGate;
+
+      }
     }
     
-    Event->Filters[i]=thisEventsFF; //save filter if it is there
-    Event->CFDs[i]=thisEventsCFD; //save CFD if it is there
+    // Event->Filters[i]=thisEventsFF; //save filter if it is there
+    // Event->CFDs[i]=thisEventsCFD; //save CFD if it is there
     /*
     //Push other thing into the event
     Event->pushLongGate(longGate); //longer integration window

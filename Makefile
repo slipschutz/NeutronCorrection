@@ -37,11 +37,11 @@ $(EXECUTABLE) : $(OBJECTS) $(MAINO) $(HEADERS)
 
 .cc.o:
 	@echo "Compiling" $< "..."
-	@$(CXX) $(CFLAGS) $< -o $@ 
+	$(CXX) $(CFLAGS) $< -o $@ 
 
 $(MAINO): $(MAIN)
 	@echo "Compiling" $< "..."
-	@$(CXX) $(CFLAGS) $< -o $@  
+	$(CXX) $(CFLAGS) $< -o $@  
 
 
 ##%Dictionary.o: include/%.hh src/%LinkDef.h

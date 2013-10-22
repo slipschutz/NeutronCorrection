@@ -38,24 +38,6 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-  /*
-  for (long i=0;i<1000000000000.0;i++){
-
-    if (i % 10000000 == 0 ){
-      cout<<flush<<"\r"<<"                          "<<"\r";
-      cout<<"I is "<<i;
-      int k=0;cin>>k;
-    }
-  }
-
-  cout<<"123"<<flush<<"\r";
-  cout<<"   ";
-
-  cout<<"\n\n";
-
-  //  string s = GetFormatedNumber(3.5,1,2);
-  return 0;
-  */
 
   vector <string> inputs;
   for (int i=1;i<argc;++i){
@@ -71,8 +53,6 @@ int main(int argc, char **argv){
     return 0;
   }
 
-  cout<<theInputManager.CheckOption("fl")<<endl;
-  return 0;  
   ////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -161,25 +141,27 @@ int main(int argc, char **argv){
 
 
   LendaEvent* Event = new LendaEvent();
+
   LendaEvent* inEvent = new LendaEvent();
 
   inT->SetBranchAddress("Event",&inEvent);
-  
+
 
   Event->DefineMap();
 
   //Specify the output branch
   outT->Branch("Event",&Event);
   //  outT->BranchRef();
+
   
   if(maxentry == -1)
       maxentry=nentry;
-  
+
   //  Event->setShiftCorrections(SDelta_T1_Cor,SDelta_T2_Cor);
-  Event->setGainCorrections(3.03949e-01,1.01169e+01,0);
-  Event->setGainCorrections(3.03949e-01,1.01169e+01,1);
-  Event->setGainCorrections(3.03949e-01,1.01169e+01,2);
-  Event->setGainCorrections(3.03949e-01,1.01169e+01,3);
+  // Event->setGainCorrections(3.03949e-01,1.01169e+01,0);
+  // Event->setGainCorrections(3.03949e-01,1.01169e+01,1);
+  // Event->setGainCorrections(3.03949e-01,1.01169e+01,2);
+  // Event->setGainCorrections(3.03949e-01,1.01169e+01,3);
 
 
 
@@ -241,9 +223,9 @@ int main(int argc, char **argv){
   Double_t countThresh =floor(0.005 * maxentry);//the spot at which the time estimate is made
 
   cout<<"\n\n\n";
-
-  cout<<theInputManager.d<<endl;
-
+  inT->GetEntry(0);
+  
+  Event->SetGammaPeakTime(inEvent->GammaPeakTime);
   for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
 
   //Get Event from tree
@@ -252,16 +234,17 @@ int main(int argc, char **argv){
       //copy the event 
       *Event= *inEvent;
       //Redo the PulseShape
-      for (int i=0;i<Event->Traces.size();i++){
-	if ( Event->channels[i]==8 ||  Event->channels[i]==9){
-	  int start = TMath::Floor(Event->softwareCFDs[i])+theInputManager.traceDelay -4;
-	  Double_t longGate = theFilter.getGate(Event->Traces[i],start,theInputManager.long_gate);
-	  Double_t shortGate = theFilter.getGate(Event->Traces[i],start,theInputManager.short_gate);
-	  Event->longGates[i]=longGate;//over write old long gate
-	  Event->shortGates[i]=shortGate;
-	}
-      }
-    
+      // for (int i=0;i<Event->Traces.size();i++){
+      // 	if ( Event->channels[i]==8 ||  Event->channels[i]==9){
+      // 	  int start = TMath::Floor(Event->softwareCFDs[i])+theInputManager.traceDelay -4;
+      // 	  Double_t longGate = theFilter.getGate(Event->Traces[i],start,theInputManager.long_gate);
+      // 	  Double_t shortGate = theFilter.getGate(Event->Traces[i],start,theInputManager.short_gate);
+      // 	  Event->longGates[i]=longGate;//over write old long gate
+      // 	  Event->shortGates[i]=shortGate;
+      // 	}
+      // }
+      RePackEvent(Event,theFilter,theInputManager);
+
       Event->Finalize();//DO important stuff
       outT->Fill();
       Event->Clear();//Oh god remember to clear
