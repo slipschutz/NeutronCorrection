@@ -34,11 +34,12 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
   Double_t traceDelay=inMan.traceDelay;
 
   //  bool lean =inMan.lean;
+  
 
 
   vector <Double_t> thisEventsFF;
   vector <Double_t> thisEventsCFD;
-  for (int i=0;i<(int)Event->NumOfChannelsInEvent;++i){
+  for (int i=0;i<(int)Event->times.size();++i){//can't say NumOfChannels since it hasn't been recalculated in finalize yet
     Double_t thisEventsIntegral=0; //intialize
     Double_t longGate=0; //intialize
     Double_t shortGate=0; //intialize
@@ -47,9 +48,10 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
     Double_t start=0;
     thisEventsFF.clear(); //clear
     thisEventsCFD.clear();//clear
+    
 
     if (Event->Traces[i].size()!=0){ //if this event has a trace calculate filters and such
-      
+
       if (inMan.CheckOption("fl")||inMan.CheckOption("fg")||
 	  inMan.CheckOption("w")||inMan.CheckOption("d")){
 
