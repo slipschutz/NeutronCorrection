@@ -35,7 +35,7 @@ InputManager::InputManager()
   traceDelay=50;
   fast=false;
   lean=false;
-
+  maxEntry=-1;
   ext_sigma_flag=false;
 
   validTimingModes.push_back("internalCFD");
@@ -57,12 +57,15 @@ void InputManager::BuildInputMap(){
   ValidNumericalInputs["d"]=&d;
   ValidNumericalInputs["lg"]=&long_gate;
   ValidNumericalInputs["sg"]=&short_gate;
+  ValidNumericalInputs["maxentry"]=&maxEntry;
   
   // ValidBoolInputs["remake"]=&reMakePulseShape;
 
   ValidStringInputs["timingmode"]=&timingMode;
   ValidStringInputs["inputfile"]=&specificFileName;
   
+
+
 
   for (map<string,Double_t *>::iterator ii = ValidNumericalInputs.begin();
        ii!=ValidNumericalInputs.end();ii++){

@@ -57,7 +57,7 @@ int main(int argc, char **argv){
 
 
   Int_t runNum=theInputManager.runNum;
-  Long64_t maxentry=-1;
+  Long64_t maxentry=theInputManager.maxEntry;
   Int_t long_gate = theInputManager.long_gate;
   Int_t short_gate = theInputManager.short_gate;
 
@@ -230,7 +230,7 @@ int main(int argc, char **argv){
 
   //Get Event from tree
     inT->GetEntry(jentry);
-    if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 ) ){
+    if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 ) || 1==1){
       //copy the event 
       *Event= *inEvent;
       //Redo the PulseShape
@@ -253,14 +253,14 @@ int main(int argc, char **argv){
     
     if (jentry == countThresh ){
       otherTime=clock();
-      timeRate = TMath::Abs( (startTime-otherTime)/CLOCKS_PER_SEC);
-      timeRate = timeRate/jentry;
+      timeRate = (Double_t)TMath::Abs( (startTime-otherTime)/CLOCKS_PER_SEC);
+      timeRate = (Double_t)timeRate/((Double_t)jentry);
     }
     //Periodic printing
     if (jentry % 10000 == 0 ){
       //      cout<<"On event "<<setw(9)<<jentry<<" "<<setprecision(3)<<setw(4)<<((double)jentry)/maxentry*100.0<<"% seconds remaining "<<setprecision(4)<<setw(6)<<timeRate*(maxentry-jentry)<<flush<<"\r";
       cout<<flush<<"\r"<<"                                                                                          "<<"\r";
-      cout<<"On Event "<<jentry<<" "<<((double)jentry)/(maxentry)*100<<"% minutes remaining "<<(1.0/60)*timeRate*(maxentry-jentry)<<" hours remaining "<<(1.0/3600)*timeRate*(maxentry-jentry);
+      cout<<setprecision(4)<<"On Event "<<jentry<<" "<<((double)jentry)/(maxentry)*100<<"% minutes remaining "<<(1.0/60)*timeRate*(maxentry-jentry)<<" hours remaining "<<(1.0/3600)*timeRate*(maxentry-jentry);
 
     }
 

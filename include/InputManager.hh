@@ -27,7 +27,7 @@ public:
   Bool_t fast;
   Bool_t lean;
   Double_t traceDelay;
-
+  Double_t maxEntry;
   Bool_t ext_flag;
   Bool_t reMakePulseShape;
   string timingMode;
