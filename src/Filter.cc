@@ -378,7 +378,7 @@ Double_t Filter::getGate(std::vector <UShort_t> &trace,int start,int L){
 
 
   int range =L;
-  int  window = floor( trace.size()/10.0);
+  int  window = floor( trace.size()/5.0);
   Double_t bgk=0;
 
   for (int i=0;i<window;i++){
