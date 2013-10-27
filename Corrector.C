@@ -233,6 +233,8 @@ int main(int argc, char **argv){
     if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 )){
       //copy the event 
       *Event= *inEvent;
+      // cout<<"Event "<<Event->Traces.size()<<endl;
+      // cout<<"inEvent "<<inEvent->Traces.size()<<endl;
       //Redo the PulseShape
       // for (int i=0;i<Event->Traces.size();i++){
       // 	if ( Event->channels[i]==8 ||  Event->channels[i]==9){

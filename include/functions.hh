@@ -53,7 +53,7 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
     if (Event->Traces[i].size()!=0){ //if this event has a trace calculate filters and such
 
       if (inMan.CheckOption("fl")||inMan.CheckOption("fg")||
-	  inMan.CheckOption("w")||inMan.CheckOption("d")){
+	  inMan.CheckOption("w")||inMan.CheckOption("d") || inMan.CheckOption("updateall")){
 
 	theFilter.FastFilter(Event->Traces[i],thisEventsFF,FL,FG); //run FF algorithim
 	thisEventsCFD = theFilter.CFD(thisEventsFF,CFD_delay,CFD_scale_factor); //run CFD algorithim
@@ -65,13 +65,14 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
 	//Over Write the Event with the new values 	
 	Event->Filters[i]=thisEventsFF;
 	Event->CFDs[i]=thisEventsCFD;
-	
+
 	Event->softTimes[i]=Event->softTimes[i]-Event->softwareCFDs[i]+softwareCFD;//take out old CFD add in new one
 	Event->cubicTimes[i]=Event->cubicTimes[i]-Event->cubicCFDs[i]+cubicCFD;
-	//above two lines should be before next to
+	//above two lines should be before next two
 	Event->softwareCFDs[i]=softwareCFD;
 	Event->cubicCFDs[i]=cubicCFD;
-      } else if ( inMan.CheckOption("sg")||inMan.CheckOption("lg")){
+      }
+      if ( inMan.CheckOption("sg")||inMan.CheckOption("lg")||inMan.CheckOption("updateall")){
 	start = TMath::Floor(Event->softwareCFDs[i])+traceDelay -4; // the start point in the trace for the gates
 	thisEventsIntegral = theFilter.getEnergy(Event->Traces[i]);
 	if (Event->channels[i]==8){

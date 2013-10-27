@@ -33,6 +33,8 @@ public:
   string timingMode;
   Double_t FL,FG,d,w;
 
+  Bool_t UpdateAll;
+
   Double_t short_gate,long_gate;
   Double_t short_gate2,long_gate2;
 

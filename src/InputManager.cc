@@ -21,10 +21,10 @@ InputManager::InputManager()
   specificFileName="";
 
   //defualt Filter settings see pixie manual
-  FL=2;
+  FL=3;
   FG=0;
   d=3; //in clock ticks
-  w =0.25;
+  w =0;
   ext_flag=false;//defualt to none meta run format
 
   long_gate =17;
@@ -33,6 +33,7 @@ InputManager::InputManager()
   long_gate2 =17;
   short_gate2=5;
 
+  UpdateAll=false;
 
   reMakePulseShape=false;
   sigma=1.0;
@@ -71,7 +72,7 @@ void InputManager::BuildInputMap(){
   ValidStringInputs["timingmode"]=&timingMode;
   ValidStringInputs["inputfile"]=&specificFileName;
   
-
+  ValidBoolInputs["updateall"]=&UpdateAll;
 
 
   for (map<string,Double_t *>::iterator ii = ValidNumericalInputs.begin();
