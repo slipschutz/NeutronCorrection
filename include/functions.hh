@@ -74,8 +74,14 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
       } else if ( inMan.CheckOption("sg")||inMan.CheckOption("lg")){
 	start = TMath::Floor(Event->softwareCFDs[i])+traceDelay -4; // the start point in the trace for the gates
 	thisEventsIntegral = theFilter.getEnergy(Event->Traces[i]);
-	longGate = theFilter.getGate(Event->Traces[i],start,inMan.long_gate);
-	shortGate = theFilter.getGate(Event->Traces[i],start,inMan.short_gate);
+	if (Event->channels[i]==8){
+	  longGate = theFilter.getGate(Event->Traces[i],start,inMan.long_gate2);
+	  shortGate = theFilter.getGate(Event->Traces[i],start,inMan.short_gate2);
+	}else {
+	  longGate = theFilter.getGate(Event->Traces[i],start,inMan.long_gate);
+	  shortGate = theFilter.getGate(Event->Traces[i],start,inMan.short_gate);
+	}
+
 	//OverWrite the Event with new values 
 	Event->energies[i]=thisEventsIntegral;
 	Event->shortGates[i]=shortGate;

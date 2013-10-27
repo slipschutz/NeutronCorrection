@@ -230,7 +230,7 @@ int main(int argc, char **argv){
 
   //Get Event from tree
     inT->GetEntry(jentry);
-    if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 ) || 1==1){
+    if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 )){
       //copy the event 
       *Event= *inEvent;
       //Redo the PulseShape

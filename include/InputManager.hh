@@ -34,6 +34,7 @@ public:
   Double_t FL,FG,d,w;
 
   Double_t short_gate,long_gate;
+  Double_t short_gate2,long_gate2;
 
   string specificFileName;
 
