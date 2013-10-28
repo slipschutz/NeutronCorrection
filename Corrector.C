@@ -225,7 +225,11 @@ int main(int argc, char **argv){
   cout<<"\n\n\n";
   inT->GetEntry(0);
   
-  Event->SetGammaPeakTime(inEvent->GammaPeakTime);
+  if(theInputManager.CheckOption("gammapeak")){
+    Event->SetGammaPeakTime(theInputManager.GammaPeak);
+  }else {
+    Event->SetGammaPeakTime(inEvent->GammaPeakTime);
+  }
   for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
 
   //Get Event from tree

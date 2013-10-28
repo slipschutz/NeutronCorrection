@@ -38,6 +38,8 @@ InputManager::InputManager()
   reMakePulseShape=false;
   sigma=1.0;
 
+  GammaPeak=4.08274;
+
   traceDelay=50;
   fast=false;
   lean=false;
@@ -66,6 +68,8 @@ void InputManager::BuildInputMap(){
   ValidNumericalInputs["lg2"]=&long_gate2;
   ValidNumericalInputs["sg2"]=&short_gate2;
   ValidNumericalInputs["maxentry"]=&maxEntry;
+  ValidNumericalInputs["gammapeak"]=&GammaPeak;
+  
   
   // ValidBoolInputs["remake"]=&reMakePulseShape;
 
@@ -73,6 +77,7 @@ void InputManager::BuildInputMap(){
   ValidStringInputs["inputfile"]=&specificFileName;
   
   ValidBoolInputs["updateall"]=&UpdateAll;
+
 
 
   for (map<string,Double_t *>::iterator ii = ValidNumericalInputs.begin();

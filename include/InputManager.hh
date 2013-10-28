@@ -35,6 +35,8 @@ public:
 
   Bool_t UpdateAll;
 
+  Double_t GammaPeak;
+
   Double_t short_gate,long_gate;
   Double_t short_gate2,long_gate2;
 
