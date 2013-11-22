@@ -39,12 +39,18 @@ InputManager::InputManager()
   sigma=1.0;
 
   GammaPeak=4.08274;
+  GammaPeak2=0.249663;
+  TOFFudge=1.0;
+
+  nothingWrong=true;
 
   traceDelay=50;
   fast=false;
   lean=false;
   maxEntry=-1;
   ext_sigma_flag=false;
+
+  notes="";
 
   validTimingModes.push_back("internalCFD");
   validTimingModes.push_back("softwareCFD");
@@ -69,11 +75,13 @@ void InputManager::BuildInputMap(){
   ValidNumericalInputs["sg2"]=&short_gate2;
   ValidNumericalInputs["maxentry"]=&maxEntry;
   ValidNumericalInputs["gammapeak"]=&GammaPeak;
-  
+  ValidNumericalInputs["gammapeak2"]=&GammaPeak2;
+  ValidNumericalInputs["toffudge"]=&TOFFudge;
   
   // ValidBoolInputs["remake"]=&reMakePulseShape;
 
   ValidStringInputs["timingmode"]=&timingMode;
+  ValidStringInputs["notes"]=&notes;
   ValidStringInputs["inputfile"]=&specificFileName;
   
   ValidBoolInputs["updateall"]=&UpdateAll;
@@ -133,6 +141,7 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
     temp = split(inputs[i],':');
     if (temp.size() != 2 ){//input was not a:v
       cout<<"***Warning input "<<inputs[i]<<" not recognized***"<<endl;
+      nothingWrong=false;
     } else{
       if (lowerCase(temp[0])=="inputfile"){
 	Flags.push_back(lowerCase(temp[0]));
@@ -159,6 +168,7 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
       } else {
 	// bool argument not found 
 	cout<<"***Warning "<<Arguments[i]<<" Is not a valid argument for bool flag: "<<Flags[i]<<endl;
+	nothingWrong=false;
       }
     } else if ( ValidNumericalInputs.find(Flags[i]) != ValidNumericalInputs.end()){
       // Numerical option found
@@ -176,6 +186,7 @@ Bool_t InputManager::loadInputs2(vector <string> & inputs){
       *(ValidStringInputs[Flags[i]]) = Arguments[i];
     } else {
       cout<<"Unkown option "<<Flags[i]<<endl;
+      nothingWrong=false;
     }
     ///mark any known flags as havign bee updated
     if (ChangedInputsMap.count(Flags[i])!=0){
@@ -275,7 +286,7 @@ Bool_t InputManager::loadInputs(vector <string> & inputs){
 
 Bool_t InputManager::checkValues()
 {
-  Bool_t nothingWrong=true;
+  //  Bool_t nothingWrong=true;
   Bool_t timingBool=false;
   
   if (numFiles <=0 || runNum <=0 )

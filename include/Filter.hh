@@ -36,6 +36,8 @@ public:
   Double_t getEnergy(std::vector <UShort_t> &trace);
 
   Double_t getGate(std::vector <UShort_t> &trace,int start,int L);
+  
+  Double_t getMaxPulseHeight(std::vector <UShort_t> &trace);
 
   double getFunc(TMatrixD, double);
 

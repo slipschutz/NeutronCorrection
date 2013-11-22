@@ -66,8 +66,9 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
 	Event->Filters[i]=thisEventsFF;
 	Event->CFDs[i]=thisEventsCFD;
 
+
 	Event->softTimes[i]=Event->softTimes[i]-Event->softwareCFDs[i]+softwareCFD;//take out old CFD add in new one
-	Event->cubicTimes[i]=Event->cubicTimes[i]-Event->cubicCFDs[i]+cubicCFD;
+	Event->cubicTimes[i]=Event->times[i]-Event->internalCFDs[i]+cubicCFD;
 	//above two lines should be before next two
 	Event->softwareCFDs[i]=softwareCFD;
 	Event->cubicCFDs[i]=cubicCFD;
@@ -82,6 +83,8 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
 	  longGate = theFilter.getGate(Event->Traces[i],start,inMan.long_gate);
 	  shortGate = theFilter.getGate(Event->Traces[i],start,inMan.short_gate);
 	}
+	
+	Event->pulseHeights[i]=theFilter.getMaxPulseHeight(Event->Traces[i]);
 
 	//OverWrite the Event with new values 
 	Event->energies[i]=thisEventsIntegral;
@@ -108,30 +111,5 @@ void RePackEvent(LendaEvent *Event,Filter &theFilter,InputManager& inMan){
     Event->pushEntryNum(events[i]->jentry);
     */  
   }
-
-}
-
-string GetFormatedNumber(double num,int length,int precision){
-  
-  double decimalPart = num-floor(num);
-  /*
-  decimalPart= ( round ( decimalPart*(pow(10,precision))) )/(pow(10,precision));
-  cout<<"decimalPart is "<<decimalPart<<endl;
-  
-  stringstream decimalPartStream <<decimalPart;
-  int decimalPartLength = decimalPartStream.str().length();
-  
-  stringstream numberPartStream << floor(num);
-  int numberPartLength = numberPartStream.str().length();
-
-  
-  */
-  
-
-  
-  string s= "hello";
-  return s; 
-  
-
 
 }

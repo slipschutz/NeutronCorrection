@@ -393,3 +393,18 @@ Double_t Filter::getGate(std::vector <UShort_t> &trace,int start,int L){
 
   return total-(bgk*range);
 }
+
+
+Double_t Filter::getMaxPulseHeight(vector <UShort_t> &trace){
+
+  int maxSpot=-1;
+  Double_t max=0;
+  for (int i=0;i<trace.size();i++){
+    if (trace[i]>max){
+      max=trace[i];
+      maxSpot=i;
+    }
+    
+  }
+  return max;
+}

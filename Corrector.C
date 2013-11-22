@@ -124,7 +124,7 @@ int main(int argc, char **argv){
   
   if (!reMakePulseShape){
     stringstream s;
-    s<<"CoR"<<theInputManager.specificFileName;
+    s<<"CoR"<<theInputManager.notes<<theInputManager.specificFileName;
     outFile = fileMan->getOutputFile(s.str().c_str());
   } else{
     outFile = fileMan->getOutputFile(long_gate,short_gate);
@@ -230,11 +230,24 @@ int main(int argc, char **argv){
   }else {
     Event->SetGammaPeakTime(inEvent->GammaPeakTime);
   }
+  if(theInputManager.CheckOption("gammapeak2")){
+    Event->SetGammaPeakTime2(theInputManager.GammaPeak2);
+  }else {
+    Event->SetGammaPeakTime2(inEvent->GammaPeakTime2);
+  }
+  if(theInputManager.CheckOption("toffudge")){
+    Event->SetTOFFudge(theInputManager.TOFFudge);
+  }else {
+    Event->SetTOFFudge(inEvent->TOFFudge);
+  }
+
+
   for (int jentry=0;jentry<maxentry;jentry++){ // main analysis loop
 
   //Get Event from tree
     inT->GetEntry(jentry);
-    if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 )){
+    //if (inEvent->NumOfChannelsInEvent==3 || (inEvent->NumOfChannelsInEvent==2 && inEvent->channels[0]==8 )){
+    if (1==1){
       //copy the event 
       *Event= *inEvent;
       // cout<<"Event "<<Event->Traces.size()<<endl;
@@ -259,7 +272,7 @@ int main(int argc, char **argv){
     
     if (jentry == countThresh ){
       otherTime=clock();
-      timeRate = (Double_t)TMath::Abs( (startTime-otherTime)/CLOCKS_PER_SEC);
+      timeRate = (Double_t)TMath::Abs( (Double_t)(startTime-otherTime)/CLOCKS_PER_SEC);
       timeRate = (Double_t)timeRate/((Double_t)jentry);
     }
     //Periodic printing

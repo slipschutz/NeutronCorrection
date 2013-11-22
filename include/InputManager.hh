@@ -36,11 +36,14 @@ public:
   Bool_t UpdateAll;
 
   Double_t GammaPeak;
+  Double_t GammaPeak2;
+  Double_t TOFFudge;
 
   Double_t short_gate,long_gate;
   Double_t short_gate2,long_gate2;
 
   string specificFileName;
+  string notes;
 
   Double_t sigma;
 
@@ -51,7 +54,8 @@ private:
   vector <string> split (const string &s, char delim);
 
   Bool_t checkValues();
-  
+  Bool_t nothingWrong;
+
   string lowerCase(string);
 
   map < string , Double_t *> ValidNumericalInputs; 
